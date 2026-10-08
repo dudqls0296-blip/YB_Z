@@ -563,3 +563,462 @@ kbd {
 @media (prefers-reduced-motion: reduce) {
   .rv, .rv-l, .rv-r, .rv-scale { opacity: 1; transform: none; filter: none; transition: none; }
 }
+
+/* ═══════════════════════════════════════════════
+   PRINT & PDF EXPORT STYLESHEET (A4 Landscape Presentation)
+   ═══════════════════════════════════════════════ */
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 8mm 10mm;
+  }
+
+  /* 강제 배경색 및 폰트 인쇄 */
+  html, body {
+    background: #0b0e14 !important;
+    color: #ded6cb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
+    width: 100% !important;
+    font-size: 13px !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* 불필요한 고정 UI 숨김 */
+  .top-controls,
+  .scroll-progress,
+  .hall-nav,
+  #emberCanvas,
+  .scroll-hint,
+  .presenter-bar,
+  .key-help,
+  .pt-click-hint,
+  #patternModal,
+  .hero-update-pill .arrow-right {
+    display: none !important;
+  }
+
+  /* 애니메이션 강제 완료 */
+  .rv, .rv-l, .rv-r, .rv-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  /* 헤더/제목 분할 방지 */
+  h1, h2, h3, h4, .hall-head, .eyebrow, .sub-title {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* 컴포넌트 내부 분할 방지 */
+  .spec, .stat-row, .tl-item, .browser, .cards3, .card,
+  .type-card, .flow, .compare, .phase, .pt, .hud-stage,
+  .hud-legend, .hud-feats, .case-body, .cases-mini, .layer,
+  .prog-wrap, .kanban, .col, .ts-card, .hud-card, figure {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* 0. 표지 & XI. 에필로그 */
+  section.entrance,
+  section.epilogue {
+    min-height: 188mm !important;
+    height: 188mm !important;
+    padding: 0 !important;
+    break-before: page;
+    page-break-before: always;
+    break-after: page;
+    page-break-after: always;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: relative !important;
+    box-sizing: border-box !important;
+  }
+
+  section.entrance {
+    break-before: avoid !important;
+    page-break-before: avoid !important;
+  }
+
+  .entrance-bg {
+    position: absolute !important;
+    inset: 0 !important;
+    z-index: -2 !important;
+  }
+
+  .entrance-bg img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  .entrance-logo {
+    width: 480px !important;
+    max-width: 65vw !important;
+    margin-top: 16px !important;
+  }
+
+  .hero-update-pill {
+    margin-top: 24px !important;
+  }
+
+  /* 본문 섹션 공통 */
+  .hall {
+    padding: 12mm 10mm 14mm !important;
+    max-width: 100% !important;
+    break-before: page;
+    page-break-before: always;
+    box-sizing: border-box !important;
+  }
+
+  .hall-head {
+    margin-bottom: 18px !important;
+    gap: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .hall-num {
+    font-size: 3.6rem !important;
+    line-height: 1 !important;
+  }
+
+  .hall-title {
+    font-size: 1.7rem !important;
+    line-height: 1.25 !important;
+  }
+
+  .center-lead {
+    margin: 0 auto 20px !important;
+    font-size: 0.95rem !important;
+    max-width: 900px !important;
+  }
+
+  .sub-title {
+    margin: 20px 0 12px !important;
+    font-size: 11px !important;
+  }
+
+  .lead {
+    font-size: 1.15rem !important;
+    line-height: 1.55 !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  /* I. PROLOGUE */
+  .prologue-grid {
+    display: grid !important;
+    grid-template-columns: 1.25fr 0.75fr !important;
+    gap: 30px !important;
+    align-items: center !important;
+  }
+
+  .frame img {
+    max-height: 85mm !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+  }
+
+  .spec {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    margin-top: 18px !important;
+  }
+
+  .spec div {
+    padding: 10px 14px !important;
+  }
+
+  .stat-row {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    margin-top: 24px !important;
+  }
+
+  .stat {
+    padding: 14px 6px !important;
+  }
+
+  .stat b {
+    font-size: 2.1rem !important;
+  }
+
+  /* II. TIMELINE */
+  .tl {
+    padding: 10px 0 !important;
+  }
+
+  .tl-line {
+    left: 50% !important;
+    display: block !important;
+  }
+
+  .tl-item {
+    width: calc(50% - 35px) !important;
+    padding: 16px 20px !important;
+    margin-bottom: 18px !important;
+  }
+
+  .tl-item:nth-child(even)::before { right: -42px !important; left: auto !important; }
+  .tl-item:nth-child(odd)::before { left: -42px !important; right: auto !important; }
+  .tl-item:nth-child(odd) { margin-left: auto !important; }
+  .tl-item:nth-child(even) { margin-right: auto !important; margin-left: 0 !important; }
+
+  /* III. WEBSITE */
+  .split {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 28px !important;
+    align-items: start !important;
+    margin-bottom: 24px !important;
+  }
+
+  .browser-view {
+    aspect-ratio: 16/9 !important;
+  }
+
+  .swatches {
+    display: grid !important;
+    grid-template-columns: repeat(8, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .sw i {
+    aspect-ratio: 1/1 !important;
+    margin-bottom: 6px !important;
+  }
+
+  .type-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  .type-card {
+    padding: 18px 16px !important;
+  }
+
+  .type-card span {
+    font-size: 1.25rem !important;
+    min-height: 2.2em !important;
+    margin-bottom: 8px !important;
+  }
+
+  /* IV. TITLE & LOADING */
+  .flow {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    margin-bottom: 24px !important;
+  }
+
+  .flow-step {
+    padding: 14px 10px !important;
+  }
+
+  .flow-arrow {
+    width: 32px !important;
+    height: 1px !important;
+  }
+
+  .flow-arrow::after {
+    right: 0 !important;
+    top: -3px !important;
+    transform: rotate(45deg) !important;
+  }
+
+  .compare {
+    margin-bottom: 24px !important;
+  }
+
+  .compare img {
+    max-height: 70mm !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+  }
+
+  .cards3 {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .card {
+    padding: 18px 16px !important;
+  }
+
+  /* V. PLAYER */
+  .keys {
+    gap: 8px !important;
+  }
+
+  kbd {
+    min-width: 80px !important;
+    padding: 3px 8px !important;
+    font-size: 0.75rem !important;
+  }
+
+  /* VI. BOSS AI */
+  .phase {
+    margin-bottom: 18px !important;
+  }
+
+  .phase-notes {
+    display: grid !important;
+    grid-template-columns: 30% 20% 20% 30% !important;
+    gap: 10px !important;
+  }
+
+  .patterns {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .pt {
+    padding: 12px 14px !important;
+  }
+
+  /* VII. HUD */
+  .hud-stage {
+    max-height: 85mm !important;
+    overflow: hidden !important;
+    margin-bottom: 18px !important;
+  }
+
+  .hud-bg {
+    max-height: 85mm !important;
+    object-fit: cover !important;
+  }
+
+  .hud-codex, .hud-hp span {
+    display: block !important;
+  }
+
+  .hud-legend {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+  }
+
+  .hud-feats {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  /* VIII. TROUBLESHOOTING */
+  .cases-mini {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .case-body {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+
+  .case-col + .case-col {
+    border-left: 1px solid var(--gray-dark) !important;
+    border-top: none !important;
+  }
+
+  /* IX. ARCHITECTURE */
+  .layer {
+    display: grid !important;
+    grid-template-columns: 150px 1fr !important;
+    margin-bottom: 8px !important;
+  }
+
+  .layer h4 {
+    border-right: 1px solid var(--gray-dark) !important;
+    border-bottom: none !important;
+    padding: 10px 14px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .layer p {
+    padding: 10px 16px !important;
+    font-size: 0.85rem !important;
+  }
+
+  /* X. PROGRESS */
+  .prog-wrap {
+    display: grid !important;
+    grid-template-columns: 200px 1fr !important;
+    gap: 32px !important;
+    align-items: center !important;
+    margin-bottom: 24px !important;
+  }
+
+  .ring {
+    margin: 0 auto !important;
+  }
+
+  .kanban {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .col {
+    padding: 16px 14px !important;
+  }
+
+  .col ul li {
+    font-size: 0.83rem !important;
+    padding: 4px 0 !important;
+  }
+
+  /* 오늘 작업 요약 리포트 페이지 */
+  #todayModal {
+    position: static !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    display: block !important;
+    padding: 12mm 10mm 14mm !important;
+    break-before: page;
+    page-break-before: always;
+    box-sizing: border-box !important;
+  }
+
+  #todayModal .modal-close {
+    display: none !important;
+  }
+
+  #todayModal .modal-box {
+    max-width: 100% !important;
+    background: rgba(19,23,32,.95) !important;
+    border: 1px solid var(--gold-dim) !important;
+    box-shadow: none !important;
+    padding: 24px 28px !important;
+  }
+
+  .today-summary-content {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+  }
+
+  /* XI. 에필로그 트레일러 */
+  .trailer video {
+    max-height: 75mm !important;
+    margin: 0 auto;
+    border: 1px solid var(--gold-dim);
+  }
+}
+
+

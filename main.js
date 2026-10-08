@@ -515,4 +515,42 @@
       requestAnimationFrame(loop);
     })(0);
   }
+
+  /* ── 10. PDF 인쇄 / 헤드리스 모드 사전 렌더링 ── */
+  function prepareForPrint() {
+    $$('.rv, .rv-l, .rv-r, .rv-scale').forEach((el) => {
+      el.classList.add('in');
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+      el.style.filter = 'none';
+    });
+
+    $$('.track i').forEach((bar) => {
+      if (bar.dataset.w) bar.style.width = bar.dataset.w + '%';
+    });
+
+    $$('[data-count]').forEach((el) => {
+      el.dataset.done = '1';
+      el.textContent = (+el.dataset.count).toLocaleString();
+    });
+
+    const ringEl = $('.ring[data-ring]');
+    if (ringEl) {
+      const pct = +ringEl.dataset.ring;
+      const fg = $('#ringFg');
+      if (fg) {
+        const C = 2 * Math.PI * 88;
+        fg.style.strokeDasharray = `${C}`;
+        fg.style.strokeDashoffset = `${C * (1 - pct / 100)}`;
+      }
+      const num = $('#ringNum');
+      if (num) num.textContent = pct;
+    }
+  }
+
+  window.addEventListener('beforeprint', prepareForPrint);
+  if (window.location.search.includes('print') || navigator.userAgent.includes('Headless')) {
+    prepareForPrint();
+  }
 })();
+
