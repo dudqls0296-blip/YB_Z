@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASHEN THRONE — Development Exhibition &amp; Showcase</title>
+  <meta name="description" content="ASHEN THRONE 다크 판타지 소울라이크 1:1 보스전 개발 과정 인터랙티브 전시 및 발표 쇼케이스" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Sans+KR:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 상단 스크롤 진행 바 -->
+  <div class="scroll-progress"><div class="scroll-progress-bar" id="scrollBar"></div></div>
+
+  <!-- 상단 퀵 컨트롤 바 (발표 도우미, 사운드, 전체화면) -->
+  <header class="top-controls">
+    <div class="ctrl-brand">
+      <span class="ctrl-brand-main">ASHEN THRONE</span>
+      <span class="ctrl-brand-sub">DEV EXHIBITION</span>
+    </div>
+    <div class="ctrl-actions">
+      <button class="ctrl-btn" id="todayBadgeBtn" title="오늘의 작업 요약 보기">
+        <span class="dot-pulse"></span>
+        <span class="ctrl-btn-text">오늘 작업 리포트</span>
+      </button>
+      <button class="ctrl-btn" id="presenterToggle" title="단축키: P">
+        <span class="ctrl-icon">🎤</span>
+        <span class="ctrl-btn-text">발표 가이드 <b class="key-tag">P</b></span>
+      </button>
+      <button class="ctrl-btn" id="sfxToggle" title="UI 효과음 토글">
+        <span class="ctrl-icon" id="sfxIcon">🔊</span>
+        <span class="ctrl-btn-text">SFX</span>
+      </button>
+      <button class="ctrl-btn" id="fsToggle" title="전체화면 전환">
+        <span class="ctrl-icon">⛶</span>
+        <span class="ctrl-btn-text">전체화면</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 우측 전시관 내비게이션 -->
+  <nav class="hall-nav" id="hallNav" aria-label="전시관 이동">
+    <a href="#entrance" data-label="ENTRANCE"><span>0</span></a>
+    <a href="#prologue" data-label="PROLOGUE"><span>I</span></a>
+    <a href="#timeline" data-label="TIMELINE"><span>II</span></a>
+    <a href="#hall-web" data-label="WEBSITE"><span>III</span></a>
+    <a href="#hall-intro" data-label="TITLE &amp; LOADING"><span>IV</span></a>
+    <a href="#hall-player" data-label="PLAYER"><span>V</span></a>
+    <a href="#hall-boss" data-label="BOSS AI"><span>VI</span></a>
+    <a href="#hall-hud" data-label="HUD"><span>VII</span></a>
+    <a href="#hall-fix" data-label="TROUBLESHOOTING"><span>VIII</span></a>
+    <a href="#hall-arch" data-label="ARCHITECTURE"><span>IX</span></a>
+    <a href="#progress" data-label="PROGRESS"><span>X</span></a>
+    <a href="#epilogue" data-label="EPILOGUE"><span>XI</span></a>
+  </nav>
+
+  <!-- 잿가루 / 불씨 배경 캔버스 -->
+  <canvas id="emberCanvas" aria-hidden="true"></canvas>
+
+  <!-- ═════════════ 0. ENTRANCE ═════════════ -->
+  <section id="entrance" class="entrance" data-section-name="ENTRANCE" data-speech="시작 멘트: 인덕대학교 게임 &amp; VR 콘텐츠 디자인 2026학년도 졸업작품 프로젝트 'ASHEN THRONE(잿빛 옥좌)'의 개발 진행 과정과 오늘까지의 핵심 작업 내역을 정리한 프레젠테이션입니다.">
+    <div class="entrance-bg"><img src="assets/hero-city.jpg" alt="" id="entranceImg" /></div>
+    <div class="entrance-shade"></div>
+    <div class="entrance-content">
+      <p class="eyebrow rv">GRADUATION PROJECT 2026 · DEVELOPMENT EXHIBITION</p>
+      <img src="assets/Loading_Logo.png" alt="ASHEN THRONE" class="entrance-logo rv" style="--d:.15s" />
+      <div class="line-gold rv" style="--d:.3s"></div>
+      <p class="entrance-sub rv" style="--d:.45s">잿빛 옥좌 — 소울라이크 1:1 보스전 개발 기록전</p>
+      <p class="entrance-meta rv" style="--d:.6s">개발 총괄: 김영빈 · 인덕대학교 게임 &amp; VR 콘텐츠 디자인</p>
+
+      <!-- 최신 업데이트 퀵 배너 -->
+      <div class="hero-update-pill rv" style="--d:.75s" id="openTodaySummary">
+        <span class="badge-gold">LATEST UPDATE</span>
+        <span>모션 꼬임 해결 · 지면 밀착 구르기 · 슈퍼아머 · 인게임 HUD 완성</span>
+        <span class="arrow-right">→</span>
+      </div>
+    </div>
+    <div class="scroll-hint"><span>SCROLL TO ENTER</span><i></i></div>
+  </section>
+
+  <!-- ═════════════ I. PROLOGUE ═════════════ -->
+  <section id="prologue" class="hall" data-section-name="I. PROLOGUE" data-speech="개요 멘트: ASHEN THRONE은 몰락한 왕국의 폐허를 배경으로 한 3D 정통 소울라이크 1:1 보스전 프로토타입입니다. 웹사이트로 다크 판타지 비주얼을 먼저 정립하고, 이를 Unity 6 HDRP 인게임 환경으로 완벽히 이식하며 6,800줄의 C# 전투 코드를 완성했습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">I</span>
+      <div>
+        <p class="eyebrow rv">PROLOGUE</p>
+        <h2 class="hall-title rv">프로젝트 개요 &amp; 비전</h2>
+      </div>
+    </div>
+
+    <div class="prologue-grid">
+      <div class="prologue-text">
+        <p class="lead rv">몰락한 왕국의 폐허, 그 중심에 남은 단 하나의 존재.<br/>
+          <em>ASHEN THRONE</em>은 정통 소울라이크 스타일의 <strong>1:1 보스 결투</strong>를 핵심으로 한 3D 다크 판타지 액션 게임입니다.</p>
+        <p class="rv">세계관과 브랜드를 담은 <strong>공식 웹사이트</strong>를 먼저 디자인하고, 그 비주얼 아이덴티티를 <strong>Unity 인게임(타이틀·로딩·HUD)</strong>으로 1:1 정밀 이식했습니다. 그리고 그 위에 스태미나 기반 공방, 8방향 락온 스트레이프, 12패턴 지능형 보스 AI를 쌓아 올리고 있습니다.</p>
+        <dl class="spec rv">
+          <div><dt>GENRE</dt><dd>3D Dark Fantasy / Soul-like Action</dd></div>
+          <div><dt>ENGINE</dt><dd>Unity 6 (6000.3.23f1) · HDRP</dd></div>
+          <div><dt>LANGUAGE</dt><dd>C# (.NET 9) · HTML5 / CSS3 / ES6</dd></div>
+          <div><dt>CORE MECHANICS</dt><dd>Stamina Economy · 8-Way Lock-On · 12 Boss Patterns</dd></div>
+        </dl>
+      </div>
+      <div class="prologue-art rv-r">
+        <div class="frame">
+          <img src="assets/knight-character.png" alt="The Wanderer" />
+          <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+        </div>
+        <p class="caption">THE WANDERER — 3D 플레이어 캐릭터 컨셉 아트</p>
+      </div>
+    </div>
+
+    <div class="stat-row">
+      <div class="stat rv" style="--d:0s"><b data-count="24">0</b><span>C# 스크립트</span></div>
+      <div class="stat rv" style="--d:.1s"><b data-count="6852">0</b><span>작성한 코드 라인</span></div>
+      <div class="stat rv" style="--d:.2s"><b data-count="12">0</b><span>보스 공격 패턴</span></div>
+      <div class="stat rv" style="--d:.3s"><b data-count="4">0</b><span>보스 페이즈 구조</span></div>
+      <div class="stat rv" style="--d:.4s"><b data-count="2">0</b><span>제작 씬 (Title / Battle)</span></div>
+    </div>
+  </section>
+
+  <!-- ═════════════ II. TIMELINE ═════════════ -->
+  <section id="timeline" class="hall hall-dark" data-section-name="II. TIMELINE" data-speech="타임라인 멘트: 9월 8일 컨셉 트레일러 수립부터 9월 19일 프로모션 웹사이트 완성, 10월 5일 Unity 코어 엔진 구축, 그리고 어제와 오늘 캐릭터 애니메이션 꼬임 완벽 해결 및 인게임 HUD 구축까지 체계적으로 빌드업해왔습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">II</span>
+      <div>
+        <p class="eyebrow rv">TIMELINE</p>
+        <h2 class="hall-title rv">개발 여정 &amp; 마일스톤</h2>
+      </div>
+    </div>
+
+    <div class="tl" id="tl">
+      <div class="tl-line"><div class="tl-line-fill" id="tlFill"></div></div>
+
+      <article class="tl-item rv-l">
+        <time>2026.09.08</time>
+        <h3>컨셉 트레일러 제작</h3>
+        <p>게임의 분위기와 톤앤매너를 확립하기 위한 첫 비디오 작업. 폐허 도시의 장엄한 분위기와 기사의 실루엣을 시각화.</p>
+        <span class="tag">CONCEPT</span>
+      </article>
+      <article class="tl-item rv-r">
+        <time>2026.09.19</time>
+        <h3>공식 웹사이트 완성</h3>
+        <p>프리로더 · 히어로 · 세계관 · 캐릭터 · 게임플레이 · 미디어 · 크레딧으로 구성된 단일 페이지 웹사이트 구축. 디자인 시스템 확립.</p>
+        <span class="tag">WEB DESIGN</span>
+      </article>
+      <article class="tl-item rv-l">
+        <time>2026.10.05</time>
+        <h3>Unity 프로젝트 코어 구축</h3>
+        <p>HDRP 세팅, 플레이어(이동/락온), 보스 AI(12패턴 FSM), 전투(히트박스/스태미나/체력) 시스템 및 아레나 자동 생성 툴 완성.</p>
+        <span class="tag">SYSTEM</span>
+      </article>
+      <article class="tl-item rv-r">
+        <time>2026.10.07</time>
+        <h3>캐릭터 애니메이션 &amp; 꼬임 해결</h3>
+        <p>DoubleL 대검 모션 바인딩, 8방향 락온 스트레이프, 지면 밀착 구르기, 슈퍼아머 적용, 캐릭터 몸/팔 꼬임 버그 4대 원인 원천 차단.</p>
+        <span class="tag">ANIMATION</span>
+      </article>
+      <article class="tl-item rv-l current">
+        <time>2026.10.08 — TODAY</time>
+        <h3>인게임 UI &amp; 시네마틱 이식 완성</h3>
+        <p>웹사이트의 비주얼 토큰을 그대로 계승한 타이틀 · 로딩 시스템(IMGUI 100% 절차적 렌더링)과 다크 판타지 인게임 HUD 완성.</p>
+        <span class="tag">UI / UX</span>
+      </article>
+    </div>
+  </section>
+
+  <!-- ═════════════ III. WEBSITE ═════════════ -->
+  <section id="hall-web" class="hall" data-section-name="III. WEBSITE" data-speech="웹 디자인 멘트: 게임 제작에 앞서 공식 웹사이트를 먼저 개발했습니다. 세계관의 색상 토큰(Black, Gold, Blood 등)과 고딕 서체(Cinzel, Cormorant)를 정의함으로써, 게임 전체의 확고한 디자인 규격을 마련했습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">III</span>
+      <div>
+        <p class="eyebrow rv">HALL OF IDENTITY</p>
+        <h2 class="hall-title rv">공식 웹사이트 &amp; 디자인 시스템</h2>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="split-media rv-l">
+        <div class="browser">
+          <div class="browser-bar"><i></i><i></i><i></i><span>ashen-throne / official-web.html</span></div>
+          <div class="browser-view">
+            <img src="assets/hero-city.jpg" alt="웹사이트 히어로" />
+            <div class="browser-hero">
+              <small>A DARK FANTASY ACTION GAME</small>
+              <strong>ASHEN</strong><em>THRONE</em>
+              <p>THE KINGDOM HAS FALLEN.<br/>ENTER THE RUINS. FACE WHAT REMAINS.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="split-text">
+        <p class="rv">게임보다 먼저 <strong>세계관의 얼굴</strong>을 만들었습니다. 웹사이트에서 정립한 색과 서체, 여백과 장식은 이후 유니티 인게임 UI 전체의 설계 표준이 되었습니다.</p>
+        <ul class="checks">
+          <li class="rv">캔버스 기반 <b>부유 먼지 60개 + 빗방울 120가닥</b> 실시간 물리 파티클</li>
+          <li class="rv">잿가루 불씨가 피어오르는 <b>2px 초슬림 미니멀 골드 프리로더</b></li>
+          <li class="rv">스크롤 리빌 · 스탯 바 애니메이션 · 라이트박스 갤러리 연동</li>
+          <li class="rv">다크소울 특유의 앤티크 골드 코너 브래킷 및 헤어라인 보더 규격 확립</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="sub-title rv">COLOR TOKENS (:root)</h3>
+    <div class="swatches">
+      <div class="sw rv" style="--d:0s;--c:#0b0e14"><i></i><b>Black</b><code>#0b0e14</code></div>
+      <div class="sw rv" style="--d:.06s;--c:#1a1f2c"><i></i><b>Dark</b><code>#1a1f2c</code></div>
+      <div class="sw rv" style="--d:.12s;--c:#785d42"><i></i><b>Gold Dim</b><code>#785d42</code></div>
+      <div class="sw rv" style="--d:.18s;--c:#b89065"><i></i><b>Gold</b><code>#b89065</code></div>
+      <div class="sw rv" style="--d:.24s;--c:#e4cca6"><i></i><b>Gold Light</b><code>#e4cca6</code></div>
+      <div class="sw rv" style="--d:.30s;--c:#ded6cb"><i></i><b>Text</b><code>#ded6cb</code></div>
+      <div class="sw rv" style="--d:.36s;--c:#8f2828"><i></i><b>Blood</b><code>#8f2828</code></div>
+      <div class="sw rv" style="--d:.42s;--c:#a4b6c8"><i></i><b>Fog</b><code>#a4b6c8</code></div>
+    </div>
+
+    <h3 class="sub-title rv">TYPOGRAPHY HIERARCHY</h3>
+    <div class="type-row">
+      <div class="type-card rv" style="--d:0s"><span class="t-cinzel">ASHEN THRONE</span><small>Cinzel — 타이틀 · 버튼 · 보스 영문명 · HUD 수치</small></div>
+      <div class="type-card rv" style="--d:.1s"><span class="t-cormorant">Enter the ruins. Face what remains.</span><small>Cormorant Garamond Italic — 태그라인 · 로어(Lore) 텍스트</small></div>
+      <div class="type-card rv" style="--d:.2s"><span class="t-noto">폐허가 된 왕국을 떠도는 기사</span><small>Noto Sans KR — 한글 본문 및 보스 서브 명칭</small></div>
+    </div>
+  </section>
+
+  <!-- ═════════════ IV. TITLE & LOADING ═════════════ -->
+  <section id="hall-intro" class="hall hall-dark" data-section-name="IV. TITLE &amp; LOADING" data-speech="시네마틱 이식 멘트: 웹사이트의 영웅 화면과 로딩창을 Unity로 1:1 이식했습니다. 특히 단 1장의 외부 스프라이트 없이 100% C# 절차적 코드로 UI를 렌더링했으며, 씬 전환 시 로딩이 두 번 반복되던 고질적 버그를 3중 가드로 완벽 차단했습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">IV</span>
+      <div>
+        <p class="eyebrow rv">FROM WEB TO ENGINE</p>
+        <h2 class="hall-title rv">타이틀 &amp; 로딩 시스템 이식</h2>
+      </div>
+    </div>
+
+    <p class="center-lead rv">공식 웹사이트의 <code>#hero</code>와 <code>#preloader</code>를 Unity 엔진에 <strong>1:1 정밀 이식</strong>.<br/>단 1장의 외부 스프라이트 없이 <strong>100% C# 절차적 코드(IMGUI)</strong>로 고해상도 UI 텍스처와 파티클을 렌더링합니다.</p>
+
+    <div class="flow">
+      <div class="flow-step rv" style="--d:0s"><span>01</span><b>게임 실행</b><small>안정된 고정 배경 · 먼지+비 파티클</small></div>
+      <div class="flow-arrow rv" style="--d:.1s"></div>
+      <div class="flow-step rv" style="--d:.2s"><span>02</span><b>타이틀 화면</b><small>Shimmer 호버 버튼 · 조작법 모달</small></div>
+      <div class="flow-arrow rv" style="--d:.3s"></div>
+      <div class="flow-step rv" style="--d:.4s"><span>03</span><b>로딩 화면</b><small>2px 골드 게이지 · 로어 텍스트 5종</small></div>
+      <div class="flow-arrow rv" style="--d:.5s"></div>
+      <div class="flow-step rv" style="--d:.6s"><span>04</span><b>전투 진입</b><small>커서 잠금 · HUD 부드러운 페이드인</small></div>
+    </div>
+
+    <div class="compare rv-scale">
+      <figure>
+        <img src="assets/LoadingScreen_User.png" alt="Unity 인게임 로딩 화면" />
+        <figcaption>IN-ENGINE · Unity 6 실제 캡처 (AshenThroneGameIntro.cs)</figcaption>
+      </figure>
+    </div>
+
+    <div class="cards3">
+      <div class="card rv" style="--d:0s">
+        <h4>호버 리셋 메커니즘</h4>
+        <p>마우스가 버튼을 벗어났을 때 호버 효과가 영구 고정되던 문제를 해결. 마우스 이탈 시 0.3초 동안 부드럽게 기본 상태로 복귀하며 키보드/패드 네비게이션과 지능적으로 분리.</p>
+      </div>
+      <div class="card rv" style="--d:.1s">
+        <h4>로딩 1회 보장 파이프라인</h4>
+        <p><code>HasPlayedIntroThisSession</code> 정적 세션 플래그, <code>isAlreadyInTarget</code> 씬 중복 검사, 더블클릭 방지 가드를 구축하여 씬 전환 시 로딩이 2회 연쇄 실행되는 현상을 3중 방어.</p>
+      </div>
+      <div class="card rv" style="--d:.2s">
+        <h4>클린 &amp; 미니멀 원칙</h4>
+        <p>자극적인 화면 플래시, 스파크 점멸, 텍스트 깜빡임을 완전히 배제. 정통 소울라이크의 무거운 톤앤매너에 맞추어 부드러운 딥 블랙 암전 페이드(Dark Fade)로만 화면 전환을 처리.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════ V. PLAYER ═════════════ -->
+  <section id="hall-player" class="hall" data-section-name="V. PLAYER" data-speech="플레이어 전투 멘트: 플레이어는 마우스/키보드 및 패드를 모두 지원하며, 스태미나 경제를 기반으로 합니다. 특히 이번 작업에서 공격 중 피격 시 모션이 취소되지 않는 슈퍼아머와 바닥에 바짝 밀착하는 저자세 구르기를 구현했습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">V</span>
+      <div>
+        <p class="eyebrow rv">HALL OF THE WANDERER</p>
+        <h2 class="hall-title rv">플레이어 전투 메커니즘</h2>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="split-text">
+        <h3 class="mini rv">전투 조작 체계 (New Input System)</h3>
+        <div class="keys">
+          <div class="key-row rv"><kbd>W A S D</kbd><span>360도 이동 (기본 보행 1.6m/s)</span></div>
+          <div class="key-row rv"><kbd>Shift</kbd><span>전력 질주 (5.2m/s, 초당 스태미나 15 소모)</span></div>
+          <div class="key-row rv"><kbd>LMB / J</kbd><span>기본 공격 — 양손 대검 내려찍기 (스태미나 15)</span></div>
+          <div class="key-row rv"><kbd>E / K</kbd><span>강공격 — 묵직한 2단 연속 횡베기 (25+25)</span></div>
+          <div class="key-row rv"><kbd>Space</kbd><span>구르기 회피 (0.44초 무적 i-Frame, 25 소모)</span></div>
+          <div class="key-row rv"><kbd>RMB / G</kbd><span>대검 방어 (피해 80% 경감, 0.25초 패링 성공 시 100% 무효)</span></div>
+          <div class="key-row rv"><kbd>Q / Tab</kbd><span>타겟 락온 토글 (보스 응시 8방향 스트레이프)</span></div>
+        </div>
+        <p class="note rv">마우스+키보드 / 키보드 단독(Dual-Key) / 게임패드 3종 입력을 완벽하게 동기화 지원.</p>
+      </div>
+
+      <div class="split-text">
+        <h3 class="mini rv">스태미나 경제 규격 (StaminaSystem.cs)</h3>
+        <div class="bars">
+          <div class="bar rv"><span>기본 공격</span><div class="track"><i data-w="15"></i></div><b>15</b></div>
+          <div class="bar rv"><span>강공격 (1타)</span><div class="track"><i data-w="25"></i></div><b>25</b></div>
+          <div class="bar rv"><span>구르기 회피</span><div class="track"><i data-w="25"></i></div><b>25</b></div>
+          <div class="bar rv"><span>질주 소모 / 초</span><div class="track"><i data-w="15"></i></div><b>15</b></div>
+          <div class="bar rv"><span>초당 자연 회복</span><div class="track sage"><i data-w="25"></i></div><b>25</b></div>
+          <div class="bar rv"><span>탈진 해제 기준선</span><div class="track ember"><i data-w="20"></i></div><b>20</b></div>
+        </div>
+        <div class="pill-row rv">
+          <span class="pill">최대 HP 200</span><span class="pill">최대 스태미나 100</span><span class="pill">가드 경감률 80%</span><span class="pill gold">패링 판정 0.25초</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards3">
+      <div class="card rv" style="--d:0s">
+        <h4>8방향 락온 블렌드트리</h4>
+        <p>자유 이동은 Type A 대검 모션(Idle, Walk, Run, Sprint)으로 매끄럽게 연결하고, 락온 시에는 Type B 8방향 모션으로 전환하여 다크소울 특유의 시선 고정 후진 무빙을 완성.</p>
+      </div>
+      <div class="card rv" style="--d:.1s">
+        <h4>지면 밀착 구르기 (Low Roll)</h4>
+        <p>높이 오프셋 커브 <code>_dodgeHeightOffset</code>을 신설하여 0m에서 -0.22m까지 바닥에 바짝 밀착되어 회전하도록 교정. 리타게팅 시 공중으로 솟구치는 현상을 원천 방지.</p>
+      </div>
+      <div class="card rv" style="--d:.2s">
+        <h4>공격 중 슈퍼아머 (Super Armor)</h4>
+        <p>공격 중 보스에게 맞아도 피격 애니메이션(Hit)에 의해 칼질이 끊기지 않는 슈퍼아머 적용. 호쾌한 콤보 연계와 리듬감 있는 공방을 보장.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════ VI. BOSS ═════════════ -->
+  <section id="hall-boss" class="hall hall-blood" data-section-name="VI. BOSS AI" data-speech="보스 AI 멘트: 보스 '심연의 기사'는 체력에 따라 4단계 페이즈로 전이되며, 12가지 정교한 패턴을 가집니다. 특히 4번 찌르기는 롤캐치를 유도하고, 8번 엇박 공격은 0.7초간 멈칫하며 구르기를 낚아채는 등 정교한 심리전을 구현했습니다. 카드를 클릭하면 상세 수치를 보실 수 있습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">VI</span>
+      <div>
+        <p class="eyebrow rv">HALL OF THE ABYSS</p>
+        <h2 class="hall-title rv">보스 AI — 심연의 기사 (Knight of the Abyss)</h2>
+      </div>
+    </div>
+
+    <p class="center-lead rv">HP 2,000 · 그로기 포이즈 120 · <strong>12가지 지능형 패턴</strong>을 갖춘 유한 상태 머신(FSM).<br/>체력 감소에 따라 단계별로 위협적인 연계 패턴과 광폭화가 해금됩니다. <b style="color:var(--gold-light)">각 패턴 카드를 클릭하여 상세 명세를 확인하세요.</b></p>
+
+    <div class="phase rv-scale">
+      <div class="phase-bar">
+        <div class="ph p1" style="--w:30%"><b>PHASE 1A</b><small>100–70%</small></div>
+        <div class="ph p2" style="--w:20%"><b>PHASE 1B</b><small>70–50%</small></div>
+        <div class="ph p3" style="--w:20%"><b>ENRAGE 각성</b><small>50–30%</small></div>
+        <div class="ph p4" style="--w:30%"><b>FINAL 광란</b><small>30–0%</small></div>
+      </div>
+      <div class="phase-notes">
+        <span>기본 검격 및 정면 거리 유지</span>
+        <span>돌진 · 회전 · 엇박 · 카운터 해금</span>
+        <span>이속/공속 +25%, 공격력 +20%, 6연격</span>
+        <span>필살 잿빛 대파쇄 (초토화 충격파)</span>
+      </div>
+    </div>
+
+    <div class="patterns" id="patternGrid">
+      <div class="pt rv" data-pid="1"><span>01</span><b>Basic Slash</b><small>전진 횡베기 · 패링 O</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="2"><span>02</span><b>Double Slash</b><small>좌우 2연속 빠른 베기</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="3"><span>03</span><b>Triple Slash</b><small>3단 콤보 + 강타</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="4"><span>04</span><b>Thrust (찌르기)</b><small>백스텝 후 롤 캐치 찌르기</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="5"><span>05</span><b>Dash Slash</b><small>6m 초고속 슬라이딩 베기</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv hard" data-pid="6"><span>06</span><b>Heavy Overhead</b><small>지면 강타 · 패링 불가</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="7"><span>07</span><b>Spin Slash</b><small>360도 전신 휠윈드</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="8"><span>08</span><b>Delayed Slash</b><small>0.7초 정지 구르기 낚기</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv hard" data-pid="9"><span>09</span><b>Counter (반격)</b><small>십자 가드 → 즉시 리포스트</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv" data-pid="10"><span>10</span><b>Four Combo</b><small>4연격 후 1.3초 빈틈</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv hard" data-pid="11"><span>11</span><b>Rage Combo</b><small>광폭화 6연타 난무</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+      <div class="pt rv ult" data-pid="12"><span>12</span><b>Ultimate Ashen Ruin</b><small>부양 후 잿빛 대파쇄</small><div class="pt-click-hint">CLICK FOR SPEC</div></div>
+    </div>
+    <p class="note center rv">모든 패턴은 선딜 · 공격 판정 · 후딜 · 패링 가능 여부가 데이터(<code>BossPatternData.cs</code>)로 규격화되어 공정한 공방을 제공합니다.</p>
+  </section>
+
+  <!-- ═════════════ VII. HUD ═════════════ -->
+  <section id="hall-hud" class="hall hall-dark" data-section-name="VII. HUD" data-speech="HUD 멘트: 유니티 인게임 HUD는 웹사이트의 골드 헤어라인 프레임과 Cinzel 폰트를 그대로 채택했습니다. 체력 바에는 맞았을 때 잔상이 남는 지연 감소 트레일이 있고, 스태미나 바에는 20% 탈진 해제 틱 마크가 표시되어 플레이어가 전투 상황을 한눈에 파악할 수 있습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">VII</span>
+      <div>
+        <p class="eyebrow rv">HALL OF INTERFACE</p>
+        <h2 class="hall-title rv">다크 판타지 인게임 HUD</h2>
+      </div>
+    </div>
+
+    <!-- 인터랙티브 HUD 스테이지 -->
+    <div class="hud-stage rv-scale" id="hudStage">
+      <img src="assets/hero-city.jpg" alt="" class="hud-bg" />
+      
+      <!-- 플레이어 패널 -->
+      <div class="hud-player">
+        <div class="hud-crest" title="체력에 반응하는 문장"><i></i></div>
+        <div class="hud-bars">
+          <div class="hud-hp"><div class="trail"></div><div class="fill"></div><span>156 / 200</span></div>
+          <div class="hud-st"><div class="fill"></div><i class="tick" title="20% 탈진 해제선"></i></div>
+          <div class="hud-tags"><span>◆ GUARD</span><span>◆ PARRY</span></div>
+        </div>
+      </div>
+
+      <!-- F1 조작 가이드 -->
+      <div class="hud-codex" id="hudCodex">
+        <b>F1 · COMBAT CODEX</b>
+        <span>이동 / 질주 <em>WASD + Shift</em></span>
+        <span>공격 / 강공격 <em>LMB / E</em></span>
+        <span>회피 구르기 <em>Space</em></span>
+        <span>가드 / 패링 <em>RMB</em></span>
+        <span>타겟 락온 <em>Q</em></span>
+      </div>
+
+      <!-- 락온 마커 -->
+      <div class="hud-lock"></div>
+
+      <!-- 패턴 브로드캐스트 배너 -->
+      <div class="hud-banner">★ 심연의 기사 각성 — PHASE 2 ENRAGED ★</div>
+
+      <!-- 보스 패널 -->
+      <div class="hud-boss">
+        <div class="hud-boss-name">
+          <b>KNIGHT OF THE ABYSS</b>
+          <small>심연의 기사</small>
+          <em>◆ ENRAGED</em>
+        </div>
+        <div class="hud-boss-bar">
+          <div class="fill"></div>
+          <i class="mid" title="50% 페이즈 전이 마커"></i>
+        </div>
+        <div class="hud-dmg">COMBO 145 DMG</div>
+      </div>
+    </div>
+
+    <div class="hud-legend">
+      <div class="card rv" style="--d:0s">
+        <h4>① 체력 연동 이중 다이아 문장</h4>
+        <p>체력 비율에 따라 골드 프레임 속 내부 다이아몬드 코어가 황금빛에서 검붉은 혈색으로 서서히 물들며 플레이어의 생명력을 직관적으로 전달.</p>
+      </div>
+      <div class="card rv" style="--d:.08s">
+        <h4>② 지연 감소 데미지 트레일</h4>
+        <p>피격 시 깎인 체력이 골드 앰버 잔상으로 남아있다가 천천히 뒤따라 줄어드는 정통 소울라이크 연출. 맞은 피해량을 체감 가능.</p>
+      </div>
+      <div class="card rv" style="--d:.16s">
+        <h4>③ 탈진 틱 마크 (Tick Mark)</h4>
+        <p>스태미나 바 20% 지점에 미니멀 골드 핀을 배치하여, 스태미나가 완전히 고갈되었을 때 언제 다시 공격/회피가 가능한지 명확히 인지.</p>
+      </div>
+      <div class="card rv" style="--d:.24s">
+        <h4>④ 페이즈 마커 &amp; 광폭화 엠블럼</h4>
+        <p>보스 바 중앙 50%에 각성 지점을 상시 표시. 2페이즈 돌입 시 게이지가 이글거리는 불씨색(Ember)으로 변하고 ENRAGED 엠블럼 점등.</p>
+      </div>
+      <div class="card rv" style="--d:.32s">
+        <h4>⑤ 누적 피해량 카운터</h4>
+        <p>연속 공격 적중 시 실시간으로 총 데미지가 카운트되며, 2.4초간 공격이 멈추면 부드럽게 페이드아웃되어 플레이어의 타격 만족감 증대.</p>
+      </div>
+      <div class="card rv" style="--d:.40s">
+        <h4>⑥ 토글형 F1 조작 가이드</h4>
+        <p>코너 브래킷과 골드 헤어라인으로 둘러싸인 미니멀 가이드. 전투 몰입을 방해하지 않도록 F1 키로 언제든 켜고 끌 수 있게 설계.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════ VIII. TROUBLESHOOTING ═════════════ -->
+  <section id="hall-fix" class="hall" data-section-name="VIII. TROUBLESHOOTING" data-speech="트러블슈팅 멘트: 이번 개발 과정에서 가장 어려웠던 난제는 다운로드 에셋과 자체 제작 기사 모델을 결합할 때 팔과 몸이 꽈배기처럼 비틀리던 현상이었습니다. 원인을 4단계로 분석해 완벽히 해결하고 자동 복원 유틸리티를 만들어 영구 방지했습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">VIII</span>
+      <div>
+        <p class="eyebrow rv">HALL OF TRIALS</p>
+        <h2 class="hall-title rv">기술적 문제 해결 (Troubleshooting)</h2>
+      </div>
+    </div>
+
+    <!-- 대형 심층 케이스: 캐릭터 팔/몸 꼬임 해결 -->
+    <div class="case rv-scale">
+      <div class="case-head">
+        <span class="case-badge">CASE 01 · 핵심 난제 해결</span>
+        <h3>캐릭터 팔과 몸체가 꽈배기처럼 꼬이는 현상 원천 해결</h3>
+      </div>
+      <div class="case-body">
+        <div class="case-col problem">
+          <h4>PROBLEM (문제점)</h4>
+          <p>다운로드한 <code>DoubleL RPG Animations</code> 대검 모션을 자체 제작 3D 모델에 적용하자, 걷거나 달릴 때마다 왼팔이 뒤틀리고 몸통이 좌우로 이중 비틀림 발생.</p>
+        </div>
+        <div class="case-col causes">
+          <h4>ROOT CAUSES (4가지 원인 규명)</h4>
+          <ol>
+            <li class="rv"><b>A. 잔존 강제 회전 코드:</b> 과거 방패 시절 <code>LateUpdate()</code>에 있던 왼팔 강제 회전 코드가 매 프레임 애니메이션을 덮어씀</li>
+            <li class="rv"><b>B. Z축 뱅킹 왜곡:</b> <code>HandleMovement()</code>에서 <code>visualRoot</code>에 적용되던 Z축 틸트가 몸체 왜곡 유발</li>
+            <li class="rv"><b>C. 블렌드트리 혼용:</b> Type A(정지)와 Type B(이동) 클립이 섞여 전이 구간에서 본이 뒤틀림</li>
+            <li class="rv"><b>D. 씬 내 직렬화 왜곡:</b> <code>OutdoorsScene.unity</code> 내 팔 본들의 로컬 회전값이 비틀린 채 저장됨</li>
+          </ol>
+        </div>
+        <div class="case-col solution">
+          <h4>SOLUTION (해결책 &amp; 재발 방지)</h4>
+          <p>강제 회전 코드 완전 삭제 · Z축 뱅킹 제거 · 전방 모션을 DoubleL 공식 <b>Type A InPlace</b>로 전면 통일 · 씬 내 본 회전값을 원본 Rest Pose로 복원하고, <code>PlayerSetupUtility.cs</code>에 <b>Rest Pose 자동 복원 로직</b>을 탑재하여 재발을 영구 방지.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="cases-mini">
+      <div class="case-mini rv" style="--d:0s">
+        <span class="case-badge">CASE 02</span>
+        <h4>공격 중 피격 시 모션 캔슬 (슈퍼아머 부재)</h4>
+        <p><b>문제점:</b> 공격 도중 보스에게 맞으면 AnyState의 Hit 트리거가 발동하여 시전 중이던 칼질이 취소되고 경직되어 전투 리듬 붕괴.<br/>
+        <b>해결책:</b> <code>PlayerController.cs</code>에 <code>enableHitAnimation=false</code> 슈퍼아머를 신설하고 Hit 전이를 Mute 처리하여 호쾌한 공방 완성.</p>
+      </div>
+      <div class="case-mini rv" style="--d:.1s">
+        <span class="case-badge">CASE 03</span>
+        <h4>구르기 시 공중으로 솟구치는 현상</h4>
+        <p><b>문제점:</b> 휴머노이드 리타게팅 과정에서 엉덩이(Hips) 본이 튀어올라 공중으로 부양하는 느낌 발생.<br/>
+        <b>해결책:</b> <code>_dodgeHeightOffset</code> 높이 커브(0%~25%: 0→-0.22m 낮추기, 25%~68%: 바닥 밀착, 이후 복귀) 및 Hips 상한 억제로 묵직한 구르기 달성.</p>
+      </div>
+      <div class="case-mini rv" style="--d:.2s">
+        <h4>로딩 창 2회 연속 실행되는 버그</h4>
+        <p><b>문제점:</b> 타이틀 씬에서 전투 씬으로 전환될 때 새 씬의 스크립트가 로딩을 또다시 실행하여 2회 반복됨.<br/>
+        <b>해결책:</b> <code>HasPlayedIntroThisSession</code> 세션 플래그 + 동일 씬 체크 + 더블클릭 가드의 3중 파이프라인으로 단 1회 로딩만 100% 보장.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════ IX. ARCHITECTURE ═════════════ -->
+  <section id="hall-arch" class="hall hall-dark" data-section-name="IX. ARCHITECTURE" data-speech="아키텍처 멘트: 총 24개의 스크립트를 7개 계층으로 모듈화했습니다. 특히 자체 제작한 PlayerSetupUtility, BossArenaSetup 등 에디터 자동화 스크립트로 씬과 프리팹을 원클릭으로 구성하여 개발 생산성을 크게 높였습니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">IX</span>
+      <div>
+        <p class="eyebrow rv">SYSTEM BLUEPRINT</p>
+        <h2 class="hall-title rv">모듈형 시스템 아키텍처</h2>
+      </div>
+    </div>
+
+    <div class="arch">
+      <div class="layer rv" style="--d:0s">
+        <h4>시네마틱 &amp; 인트로</h4>
+        <div class="mods">
+          <span>AshenThroneGameIntro (1,055줄)</span>
+          <span>AshenThroneTitleScreen (301줄)</span>
+          <span>AshenThroneUIStyle (156줄)</span>
+        </div>
+      </div>
+      <div class="layer rv" style="--d:.1s">
+        <h4>입력 &amp; 타겟팅</h4>
+        <div class="mods">
+          <span>PlayerInputHandler (62줄)</span>
+          <span>LockOnSystem (102줄)</span>
+          <span>PlayerIKBridge (32줄)</span>
+        </div>
+      </div>
+      <div class="layer rv" style="--d:.2s">
+        <h4>플레이어 &amp; 스탯</h4>
+        <div class="mods">
+          <span>PlayerController (1,492줄)</span>
+          <span>StaminaSystem (109줄)</span>
+          <span>HealthSystem (98줄)</span>
+        </div>
+      </div>
+      <div class="layer rv" style="--d:.3s">
+        <h4>전투 &amp; 판정 코어</h4>
+        <div class="mods">
+          <span>Hitbox (119줄)</span>
+          <span>Hurtbox (40줄)</span>
+          <span>DamageInfo (34줄)</span>
+          <span>HitStopController (26줄)</span>
+        </div>
+      </div>
+      <div class="layer rv" style="--d:.4s">
+        <h4>보스 AI 시스템</h4>
+        <div class="mods">
+          <span>BossController (1,002줄)</span>
+          <span>BossPatternData (45줄)</span>
+        </div>
+      </div>
+      <div class="layer rv" style="--d:.5s">
+        <h4>인게임 프리젠테이션</h4>
+        <div class="mods">
+          <span>BossFightHUD (605줄)</span>
+          <span>CameraController (115줄)</span>
+          <span>CharacterStatusBillboard (89줄)</span>
+        </div>
+      </div>
+      <div class="layer editor rv" style="--d:.6s">
+        <h4>에디터 자동화 툴 (Editor)</h4>
+        <div class="mods">
+          <span>PlayerSetupUtility (729줄)</span>
+          <span>BossArenaSetup (186줄)</span>
+          <span>AshenThroneTextureGenerator (191줄)</span>
+          <span>MaterialFixer (146줄)</span>
+          <span>AshenThroneSceneBuilder (89줄)</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="sub-title rv">주요 스크립트 코드 볼륨 (Lines of Code)</h3>
+    <div class="bars code-bars">
+      <div class="bar rv"><span>PlayerController.cs</span><div class="track"><i data-w="100"></i></div><b>1,492</b></div>
+      <div class="bar rv"><span>AshenThroneGameIntro.cs</span><div class="track"><i data-w="70.7"></i></div><b>1,055</b></div>
+      <div class="bar rv"><span>BossController.cs</span><div class="track"><i data-w="67.2"></i></div><b>1,002</b></div>
+      <div class="bar rv"><span>PlayerSetupUtility.cs</span><div class="track"><i data-w="48.9"></i></div><b>729</b></div>
+      <div class="bar rv"><span>BossFightHUD.cs</span><div class="track"><i data-w="40.5"></i></div><b>605</b></div>
+      <div class="bar rv"><span>AshenThroneTitleScreen.cs</span><div class="track"><i data-w="20.2"></i></div><b>301</b></div>
+    </div>
+  </section>
+
+  <!-- ═════════════ X. PROGRESS ═════════════ -->
+  <section id="progress" class="hall" data-section-name="X. PROGRESS" data-speech="진행도 멘트: 현재 전체 공정률은 약 68%입니다. 핵심 코어인 플레이어 전투, 보스 AI, UI/UX는 80~90% 이상 완성되었으며, 남은 기간에는 아레나 배경 레벨 아트와 사운드 이펙트, 처형 연출을 채워 최종 빌드를 완성할 계획입니다.">
+    <div class="hall-head">
+      <span class="hall-num rv">X</span>
+      <div>
+        <p class="eyebrow rv">CURRENT PROGRESS</p>
+        <h2 class="hall-title rv">개발 진행도 &amp; 향후 로드맵</h2>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="ring rv-scale" data-ring="68">
+        <svg viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="88" class="ring-bg" />
+          <circle cx="100" cy="100" r="88" class="ring-fg" id="ringFg" />
+        </svg>
+        <div class="ring-label"><b id="ringNum">0</b><span>% OVERALL</span></div>
+      </div>
+
+      <div class="prog-list">
+        <div class="prog rv"><span>세계관 &amp; 공식 웹사이트</span><div class="track"><i data-w="100"></i></div><b>100%</b></div>
+        <div class="prog rv"><span>타이틀 &amp; 로딩 시네마틱</span><div class="track"><i data-w="95"></i></div><b>95%</b></div>
+        <div class="prog rv"><span>인게임 HUD 시스템</span><div class="track"><i data-w="90"></i></div><b>90%</b></div>
+        <div class="prog rv"><span>플레이어 전투 &amp; 조작</span><div class="track"><i data-w="85"></i></div><b>85%</b></div>
+        <div class="prog rv"><span>캐릭터 모션 &amp; 슈퍼아머</span><div class="track"><i data-w="80"></i></div><b>80%</b></div>
+        <div class="prog rv"><span>보스 AI (12패턴 FSM)</span><div class="track"><i data-w="70"></i></div><b>70%</b></div>
+        <div class="prog rv"><span>보스 아레나 레벨 아트</span><div class="track"><i data-w="35"></i></div><b>35%</b></div>
+        <div class="prog rv"><span>사운드 &amp; VFX 파티클</span><div class="track"><i data-w="10"></i></div><b>10%</b></div>
+      </div>
+    </div>
+
+    <div class="kanban">
+      <div class="col rv" style="--d:0s">
+        <h4 class="done">COMPLETED (완료)</h4>
+        <ul>
+          <li>공식 웹사이트 및 디자인 토큰 규격화</li>
+          <li>타이틀 및 로딩 시네마틱 1:1 코드 이식</li>
+          <li>다크 판타지 인게임 HUD 전면 구축</li>
+          <li>스태미나 경제 · 3종 조작 체계 연동</li>
+          <li>8방향 락온 스트레이프 및 지면 밀착 구르기</li>
+          <li>캐릭터 몸/팔 꼬임 버그 4대 원인 원천 차단</li>
+          <li>공격 중 슈퍼아머 메커니즘 적용</li>
+        </ul>
+      </div>
+      <div class="col rv" style="--d:.1s">
+        <h4 class="doing">IN PROGRESS (진행 중)</h4>
+        <ul>
+          <li>보스 12패턴 공격 모션 타이밍 폴리싱</li>
+          <li>페이즈 전이별 공격력 및 사거리 밸런싱</li>
+          <li>타격 피드백 (히트스톱 및 카메라 셰이크 미세 조정)</li>
+          <li>보스 공격 궤적 궤적선(Slash Trail) 추가</li>
+        </ul>
+      </div>
+      <div class="col rv" style="--d:.2s">
+        <h4 class="next">NEXT MILESTONES (예정)</h4>
+        <ul>
+          <li>보스 아레나 폐허 성당 3D 레벨 아트 구축</li>
+          <li>다크 판타지 오케스트라 BGM 및 타격 SFX 탑재</li>
+          <li>플레이어 사망 연출 ('YOU DIED') 및 보스 격파 연출</li>
+          <li>최종 포트폴리오 영상 촬영 및 시연 빌드 패키징</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════════════ XI. EPILOGUE ═════════════ -->
+  <section id="epilogue" class="epilogue" data-section-name="XI. EPILOGUE" data-speech="마무리 멘트: 이상으로 ASHEN THRONE 졸업작품 개발 현황 보고를 마치겠습니다. 영상과 함께 질문이나 피드백을 주시면 감사하겠습니다.">
+    <div class="entrance-bg"><img src="assets/hero-city.jpg" alt="" /></div>
+    <div class="entrance-shade heavy"></div>
+    <div class="epilogue-inner">
+      <p class="eyebrow rv">EPILOGUE</p>
+      <blockquote class="rv">"The city breathes no more.<br/>Yet something ancient still watches from the spire."</blockquote>
+      <div class="line-gold rv"></div>
+      <div class="trailer rv-scale">
+        <video src="assets/trailer.mp4" poster="assets/hero-city.jpg" controls preload="metadata"></video>
+      </div>
+      <p class="thanks rv">경청해 주셔서 감사합니다</p>
+      <p class="entrance-meta rv">© 2026 KIM YOUNG-BIN · INDUK UNIVERSITY · GAME &amp; VR CONTENT DESIGN</p>
+    </div>
+  </section>
+
+  <!-- ═════════════ 발표자 멘트 가이드 바 (단축키 P) ═════════════ -->
+  <aside class="presenter-bar" id="presenterBar" aria-live="polite">
+    <div class="pb-inner">
+      <div class="pb-badge">
+        <span class="pb-dot"></span>
+        <span id="pbSectionTag">ENTRANCE</span>
+      </div>
+      <div class="pb-speech" id="pbSpeechText">
+        시작 멘트가 준비되었습니다. 마우스 스크롤이나 키보드(←/→)로 이동하세요.
+      </div>
+      <button class="pb-close" id="pbCloseBtn" title="가이드 바 닫기">✕</button>
+    </div>
+  </aside>
+
+  <!-- ═════════════ 보스 패턴 상세 모달 ═════════════ -->
+  <div class="modal-backdrop" id="patternModal">
+    <div class="modal-box">
+      <button class="modal-close" id="patternModalClose">✕</button>
+      <div class="modal-eyebrow" id="pmPhase">PHASE 1</div>
+      <h3 class="modal-title" id="pmTitle">01. Basic Slash</h3>
+      <div class="modal-divider"></div>
+      <div class="modal-grid">
+        <div class="modal-item"><label>데미지 (Damage)</label><span id="pmDmg">15 DMG</span></div>
+        <div class="modal-item"><label>유효 사거리</label><span id="pmRange">0 ~ 4.5m</span></div>
+        <div class="modal-item"><label>타이밍 (선딜/판정/후딜)</label><span id="pmTiming">0.6s / 0.2s / 0.5s</span></div>
+        <div class="modal-item"><label>패링 가능 여부</label><span id="pmParry" class="parry-tag">가능 (Parryable)</span></div>
+      </div>
+      <div class="modal-desc-box">
+        <label>전술 연출 및 특징</label>
+        <p id="pmDesc">설명이 들어갑니다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═════════════ 오늘 작업 리포트 팝업 모달 ═════════════ -->
+  <div class="modal-backdrop" id="todayModal">
+    <div class="modal-box modal-wide">
+      <button class="modal-close" id="todayModalClose">✕</button>
+      <div class="modal-eyebrow">TODAY WORK SUMMARY · 2026.10.08</div>
+      <h3 class="modal-title">오늘의 집중 작업 &amp; 완성 내역</h3>
+      <div class="modal-divider"></div>
+      <div class="today-summary-content">
+        <div class="ts-card">
+          <h4>⚔️ 1. 보스 피격 시 슈퍼아머 적용</h4>
+          <p>공격 도중 보스의 공격을 받아도 시전 중이던 대검 공격 모션과 히트박스가 취소되지 않고 끝까지 완성되도록 <code>enableHitAnimation=false</code> 슈퍼아머 메커니즘을 신설했습니다. 전투의 손맛과 콤보 연계가 비약적으로 상승했습니다.</p>
+        </div>
+        <div class="ts-card">
+          <h4>🔄 2. 캐릭터 몸/팔 꼬임 현상 원천 해결</h4>
+          <p>과거 방패 시절 잔존한 <code>LateUpdate()</code> 강제 회전 코드 삭제, <code>visualRoot</code> Z축 뱅킹 제거, <code>Locomotion_Free_Blend</code> Type A 통일, 씬 내 비틀린 본 회전값의 Rest Pose 복구 및 <code>PlayerSetupUtility</code> 영구 방지 자동 로더 구축을 완료했습니다.</p>
+        </div>
+        <div class="ts-card">
+          <h4>🛡️ 3. 지면 밀착 저자세 구르기 최적화</h4>
+          <p>도약 구간에서 몸을 웅크리며 높이를 0m에서 -0.22m로 낮추는 <code>_dodgeHeightOffset</code> 커브를 적용하여 공중으로 붕 뜨는 느낌을 없애고 묵직한 소울라이크 구르기를 구현했습니다.</p>
+        </div>
+        <div class="ts-card">
+          <h4>🎨 4. 타이틀/로딩 1:1 이식 &amp; 인게임 HUD 완성</h4>
+          <p>웹사이트의 앤티크 골드 감성을 유니티 IMGUI 코드로 100% 이식하고, 지연 감소 체력 트레일, 20% 스태미나 탈진 틱 마크, 로딩 2회 반복 버그 3중 방어 파이프라인을 완성했습니다.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="key-help" id="keyHelp">
+    <span>← → / PageUp · PageDown : 전시관 이동</span>
+    <span class="sep">|</span>
+    <span>P : 발표 가이드</span>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
